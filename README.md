@@ -1,6 +1,6 @@
 # pco-searchbookmarklet
 
-### [Send me to the Bookmarklet](pco-search.min.js)
+### [Send me to the Bookmarklet](bookmarklet.js)
 
 I know that the Chris and the pokemon speedrunning community have been using the Pokemon Counter Online for a few things. To help out with the normal usage, and the more unique cases, I made a bookmarklet to help filter the chart for a name, a type, or by national dex.
 
@@ -38,7 +38,7 @@ returns
 
 The counter website:  [https://pco.bobchao87.com/](https://pco.bobchao87.com/)
 
-My bookmarklet (file link, this link itself is not the bookmarklet):  [pco-search.min.js](pco-search.min.js)
+My bookmarklet (file link, this link itself is not the bookmarklet):  [pco-search.min.js](bookmarklet.js)
 
 How to install a bookmarklet:  [https://mreidsma.github.io/bookmarklets/installing.html](https://mreidsma.github.io/bookmarklets/installing.html)
 
