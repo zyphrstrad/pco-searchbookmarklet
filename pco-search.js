@@ -28,6 +28,7 @@ tv.consts = {
 };
 
 tv.vars.iconIDs = {};
+tv.vars.dom = {};
 
 tv.vars.truMatchStyles = "filter: none;"; /* leaves icons in default state */
 tv.vars.falMatchStyles = "filter: brightness(.1) invert(80%) blur(2px);";
@@ -833,11 +834,78 @@ tv.functions.getIconTypes = function(icon) {
 	return result;
 };
 
+tv.functions.setupAttributes = function() {
+
+	tv.vars.dom.icons = document.getElementsByClassName("icon");
+
+	/*
+		Force icons to have their aira (text labels for the blind)
+		described by attribute as a data attribute.  This can reduce the json
+		data by a bunch if I ever need to remove column 2 from the pokemon
+		table.  
+
+		Also adds types, and a filterable tag.
+
+		And finally, adds the styles to the page.
+	*/
+	/* tldr; mew icon named mew + psychic, not only "icon-151" */
+	for (i in tv.vars.dom.icons) {
+		var icon, describedBy, ndexId, types;
+		icon = tv.vars.dom.icons[i];
+
+		try {
+			describedBy = document.getElementById(
+				icon.getAttribute(tv.consts.attr.nameSource));
+			ndexId = tv.functions.getIconId(icon);
+
+			types = tv.functions.getIconTypes(icon);
+
+
+			icon.setAttribute(tv.consts.attr.filterable, "");
+			icon.setAttribute(tv.consts.attr.iconName,
+				describedBy.innerText.toLowerCase());
+			icon.setAttribute(tv.consts.attr.iconType,
+				types);
+
+			/* debugging purposes, for checking if icon IDs match ndex IDs
+				find info in the counsole using 
+				console.dir(document.querySelectorAll("[tv-debug-ndex-matches=false]"));
+			*/
+			/*if (tv.debug["iconIds"] == undefined) { tv.debug["iconIds"] = {};}
+			tv.debug.iconIds[ndexId] = {};
+			tv.debug.iconIds[ndexId]["aria-name"] = 
+				describedBy.innerText.toLowerCase();
+			
+			var foundNdexRow = tv.vars.monData.pokemon.filter(mon => mon[0] == ndexId)[0];
+			tv.debug.iconIds[ndexId]["data-name"] = 
+				tv.functions.getPokemonCell(foundNdexRow, "name");
+
+			tv.debug.iconIds[ndexId]["match"] = 
+				(tv.debug.iconIds[ndexId]["data-name"] == 
+					tv.debug.iconIds[ndexId]["aria-name"]);
+
+			icon.setAttribute("tv-debug-ndex-name",
+				tv.debug.iconIds[ndexId]["data-name"]);
+
+			icon.setAttribute("tv-debug-ndex-matches",
+				tv.debug.iconIds[ndexId]["match"]); */
+
+
+		} catch (err) {}
+	};
+};
+
 tv.functions.filterGeneric = function(query, filter, attribute) {
 	var br = tv.functions.surroundBrackets;
 	var quot = tv.functions.surroundDQuotes;
 	var allIcons = document.querySelectorAll(
 		br(tv.consts.attr.filterable));
+
+	if (allIcons.length < 10) {
+		tv.functions.setupAttributes();
+		allIcons = document.querySelectorAll(
+			br(tv.consts.attr.filterable));
+	}
 	var matches;
 	switch (query) {
 		case "":
@@ -951,65 +1019,9 @@ tv.functions.filterClear = function() {
 };
 
 tv.functions.start = function() {
+	tv.functions.setupAttributes();
+
 	tv.vars.dom = {};
-
-	tv.vars.dom.icons = document.getElementsByClassName("icon");
-
-	/*
-		Force icons to have their aira (text labels for the blind)
-		described by attribute as a data attribute.  This can reduce the json
-		data by a bunch if I ever need to remove column 2 from the pokemon
-		table.  
-
-		Also adds types, and a filterable tag.
-
-		And finally, adds the styles to the page.
-	*/
-	/* tldr; mew icon named mew + psychic, not only "icon-151" */
-	for (i in tv.vars.dom.icons) {
-		var icon, describedBy, ndexId, types;
-		icon = tv.vars.dom.icons[i];
-
-		try {
-			describedBy = document.getElementById(
-				icon.getAttribute(tv.consts.attr.nameSource));
-			ndexId = tv.functions.getIconId(icon);
-
-			types = tv.functions.getIconTypes(icon);
-
-
-			icon.setAttribute(tv.consts.attr.filterable, "");
-			icon.setAttribute(tv.consts.attr.iconName,
-				describedBy.innerText.toLowerCase());
-			icon.setAttribute(tv.consts.attr.iconType,
-				types);
-
-			/* debugging purposes, for checking if icon IDs match ndex IDs
-				find info in the counsole using 
-				console.dir(document.querySelectorAll("[tv-debug-ndex-matches=false]"));
-			*/
-			/*if (tv.debug["iconIds"] == undefined) { tv.debug["iconIds"] = {};}
-			tv.debug.iconIds[ndexId] = {};
-			tv.debug.iconIds[ndexId]["aria-name"] = 
-				describedBy.innerText.toLowerCase();
-			
-			var foundNdexRow = tv.vars.monData.pokemon.filter(mon => mon[0] == ndexId)[0];
-			tv.debug.iconIds[ndexId]["data-name"] = 
-				tv.functions.getPokemonCell(foundNdexRow, "name");
-
-			tv.debug.iconIds[ndexId]["match"] = 
-				(tv.debug.iconIds[ndexId]["data-name"] == 
-					tv.debug.iconIds[ndexId]["aria-name"]);
-
-			icon.setAttribute("tv-debug-ndex-name",
-				tv.debug.iconIds[ndexId]["data-name"]);
-
-			icon.setAttribute("tv-debug-ndex-matches",
-				tv.debug.iconIds[ndexId]["match"]); */
-
-
-		} catch (err) {}
-	};
 
 	var style = document.createElement("style");
 
